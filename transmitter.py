@@ -83,7 +83,7 @@ class transmitter(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
-        self.toyTank_spoofer_0 = toyTank.spoofer('7331')
+        self.toyTank_spoofer_0 = toyTank.spoofer('7331', (int(samp_rate / toy_samp_rate)))
         self.soapy_hackrf_sink_0 = None
         dev = 'driver=hackrf'
         stream_args = ''

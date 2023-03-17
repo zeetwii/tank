@@ -6,6 +6,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
+
 import numpy as np# needed for gnuradio
 from gnuradio import gr # needed for gnuradio
 import socket # needed for UDP socket
@@ -14,7 +15,7 @@ class spoofer(gr.sync_block):
     """
     docstring for block spoofer
     """
-    def __init__(self, portNum):
+    def __init__(self, portNum, overSample):
 
         # create UDP socket
         self.recSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -30,56 +31,54 @@ class spoofer(gr.sync_block):
 
         # variables for rc tank
 
-        oversample = 1000
-
         # repeat counter
         self.repeat = 4
         
         # turning jamming on or off
         self.jamming = False 
 
-        # used to store untransmitted parts of message between loops
+        # used to store un-transmitted parts of message between loops
         self.oldMsg = ''
 
         # both sides forward command
         self.bF = ''
         for char in '101110111010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010111011':
-            self.bF += char * int(oversample)
+            self.bF += char * int(overSample)
 
         # both sides reverse
         self.bR = ''
         for char in '101110111010101010101010101010101010101010101010101010101010101010101010101010111011':
-            self.bR += char * int(oversample)
+            self.bR += char * int(overSample)
 
         # fire cannon
         self.fC = ''
         for char in '101110111010101010101010101010101010101010101010101010111011':
-            self.fC += char * int(oversample)
+            self.fC += char * int(overSample)
 
         # left forward
         self.lF = ''
         for char in '101110111010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010111011':
-            self.lF += char * int(oversample)
+            self.lF += char * int(overSample)
 
         # left reverse
         self.lR = ''
         for char in '101110111010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010111011':
-            self.lR += char * int(oversample)
+            self.lR += char * int(overSample)
 
         # right forward
         self.rF = ''
         for char in '101110111010101010101010101010101010101010101010101010101010101010101010101010101010101010111011':
-            self.rF += char * int(oversample)
+            self.rF += char * int(overSample)
 
         # right reverse
         self.rR = ''
         for char in '101110111010101010101010101010111011':
-            self.rR += char * int(oversample)
+            self.rR += char * int(overSample)
 
         # start and stop
         self.st = ''
         for char in '101110111010101010101010101010101010101010111011':
-            self.st += char * int(oversample)
+            self.st += char * int(overSample)
 
         gr.sync_block.__init__(self,
             name="spoofer",
@@ -160,3 +159,4 @@ class spoofer(gr.sync_block):
 
 
         return len(output_items[0])
+

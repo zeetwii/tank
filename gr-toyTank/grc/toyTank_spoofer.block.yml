@@ -4,7 +4,7 @@ category: '[toyTank]'
 
 templates:
   imports: from gnuradio import toyTank
-  make: toyTank.spoofer(${portNum})
+  make: toyTank.spoofer(${portNum}, ${overSample})
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -17,13 +17,10 @@ parameters:
   label: Port to listen on
   dtype: string
   default: 7331
-- id: oversample
+- id: overSample
   label: Oversample rate
   dtype: int
   default: 1000
-#- id: ...
-#  label: ...
-#  dtype: ...
 
 #  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
 #  Keys include:

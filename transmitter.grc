@@ -142,7 +142,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    oversample: '1000'
+    overSample: int(samp_rate / toy_samp_rate)
     portNum: '7331'
   states:
     bus_sink: false
