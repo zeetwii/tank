@@ -8,7 +8,9 @@ This repo is meant to act as a demo and reference point when doing RF exploitati
 
 RF Exploitation is a fun field, I've been doing it almost my entire career, but it can be very hard to get into due to there not being many intro level tutorials for people who are RF and looking to use it from a hacking / pen testing standpoint.  Hopefully this guide will help fill that gap and leave you knowing more instead of less.  
 
-## Hardware Needed
+## Materials Needed
+
+### Hardware
 
 * A computer able to run [GNURadio](https://github.com/gnuradio/gnuradio)
 * [RC Fighting Battle Tanks by Liberty Imports](https://www.amazon.com/dp/B00GA97CUG)
@@ -17,4 +19,11 @@ RF Exploitation is a fun field, I've been doing it almost my entire career, but 
   * The scripts and captures in this tutorial were all done using a [HackRF One](https://greatscottgadgets.com/hackrf/one/)
   * If you only have an [RTL-SDR](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/) or other receive only SDRs, you can still record and decode your own captures but you will not be able to transmit.  
 
+### Software
 
+*  [GNURadio](https://github.com/gnuradio/gnuradio)
+* [Inspectrum](https://github.com/miek/inspectrum)
+* [Universal Radio Hacker](https://github.com/jopohl/urh)
+* (Optional) Spectrum Analyzing software, Some examples are:
+  * [QSpectrumAnalyzer](https://github.com/xmikos/qspectrumanalyzer)
+  * [SDR#](https://airspy.com/download/)
