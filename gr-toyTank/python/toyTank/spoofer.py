@@ -132,7 +132,7 @@ class spoofer(gr.sync_block):
                 print("warning, unknown command")
                 msg = '000000000000'
     
-        except socket.error: # gets called when socket timesout
+        except socket.error: # gets called when socket times out
             if len(self.oldMsg) > 0: # there is still data to send
                 msg = self.oldMsg
                 self.oldMsg = ''
