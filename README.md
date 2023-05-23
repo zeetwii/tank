@@ -100,4 +100,56 @@ After all of this analysis, we now have everything we need to write our own cont
 
 ### Transmit
 
+|   |
+|:---:|
+| ![GNURadio Transmitter](./images/transmitterFlowgraph.png) |
+| The flow graph used to transmit to the toy tanks |
+
 Now that we know everything, it's time to build the transmitter that we will use to hack the tank.  
+
+To spoof the tank commands in GNURadio, we'll create an Out Of Tree (OOT) module.  OOT modules are any module that doesn't come with vanilla GNURadio, which means anything you make yourself or from someone else.  They're useful for expanding and tailoring a GNURadio flow graph to both specific missions or unique devices, like spoofing a RC tank.  
+
+Within the OOT block, we'll go ahead and hard code each of the possible messages as binary strings.  We can do this because they are all static messages.  An example of what this looks like in the code is:
+
+```python
+# both sides forward command
+        self.bF = ''
+        for char in '101110111010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010111011':
+            self.bF += char * int(overSample)
+```
+
+Notice how we're not just doing the string normally, this is because this code was written for a HackRF, and the HackRF suffers from an undersampling problem when running at low sample rates.  This means that even though the data stream needs to transmit at 2kHz, the slowest our radio will operate at is 1MHz.  This means we have to oversample the signal and turn a single `1` into a long string of them.  That allows our radio to transmit at a high sample rate, while still being readable to the tank radio that is reading at a much slower sample rate.  
+
+There are two ways to induce oversampling.  The most brute force method is to do what we did here in the code.  This forces the entire flow graph to run at that high sample rate, which isn't great, but it also allows you to solve everything within your OOT module.  The other method is to call one of the resampling blocks within GNURadio, and use the rational resampler to increase the sample rate of the data stream right before it hits the radio.  This is done by setting the interpolation field to be whatever value you need the radio to run at, and the decimation field to be the current sample rate.  This block is used a lot in audio transmission, because audio signals have a much lower sample rate than RF signals.  
+
+In addition to spoofing, one of the EW methods we demonstrate is white noise jamming.  This is where you just have the transmitter pushing out noise at power on the same center frequency the receiver is trying to listen on.  In the code this is represented by:
+
+```python
+# if jamming set everything to 1 otherwise set everything to zero
+        if self.jamming:
+            out[:] = float(1)
+        else:
+            out[:] = float(0)
+```
+
+By setting every value of the output stream to `1`, the radio will constantly try to transmit at power.  By setting everything to `0`, we make sure it will only transmit what we want it to later in the code block.  
+
+The other thing that you need to be aware of when transmitting a signal is what the buffer size of the current transmission dump is.  The buffer size of the output isn't constant, and so you need to check to make sure that there is enough room to place all of the signal data, and if not then you need to breakup the transmission and store the extra data for the next pass.  The following code gives an example of how to do that:
+
+```python
+# test if out or msg is shorter: only needed for startup
+if len(msg) > len(out):
+    size = len(out)
+    self.oldMsg = msg[size:] # save the untransmitted data for next cycle
+    #print(f"message to big, max size {str(size)}")
+else:
+    size = len(msg)
+
+for i in range(size):
+    if msg[i] == '1':
+        out[i] = float(1)
+    else:
+        out[i] = float(0)
+```
+
+And that should be all you need to know to hack to your hearts content.  
